@@ -17,6 +17,10 @@ elif sys.argv[4] does not exist:
     raise SystemExit
 """
 
+# Puerto en el que escuchamos
+PORT = int(sys.argv[2])
+
+# Métodos que entendemos
 accepted = ['INVITE', 'ACK', 'BYE']
 
 class EchoHandler(SocketServer.DatagramRequestHandler):
@@ -36,6 +40,6 @@ class EchoHandler(SocketServer.DatagramRequestHandler):
 
 if __name__ == "__main__":
     # Creamos servidor de eco y escuchamos
-    serv = SocketServer.UDPServer(("", 6001), EchoHandler)
+    serv = SocketServer.UDPServer(("", PORT), EchoHandler)
     print "Lanzando servidor UDP de eco..."
     serv.serve_forever()

@@ -26,6 +26,7 @@ my_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 my_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 my_socket.connect((SERVER, PORT))
 
+# Enviamos la peticion
 print "Enviando: " + PETICION
 my_socket.send(PETICION + '\r\n')
 try:
@@ -34,26 +35,15 @@ except socket.error:
     print "Error: No server listening at 193.147.73.20 port 5555"
     raise SystemExit    
 
-data = data.split('\r\n\r\n')
-
-i = 0
-"""mess = []
-for line in data:
-    mess.append(line)
-    i += 1"""
-"""
-if mess = ["SIP/2.0 100 Trying", "SIP/2.0 180 Ring", "SIP/2.0 200 OK"]:
+# Procesamos la respuesta
+line = data.split('\r\n\r\n')[:-1]
+if line == ["SIP/2.0 100 Trying", "SIP/2.0 180 Ring", "SIP/2.0 200 OK"]:
+    # Si todo va bien enviamos un ACK
     my_socket.send("ACK sip:" + sys.argv[2] + " SIP/2.0\r\n" + '\r\n')
-elif mess = ["SIP/2.0 400 Bad Request"]:
+elif line == ["SIP/2.0 400 Bad Request"]:
     print "El servidor no entiende la petición"
-elif mess = ["SIP/2.0 405 Method Not Allowed"]:
+elif line == ["SIP/2.0 405 Method Not Allowed"]:
     print "El servidor no entiende el método requerido"
-"""
-print data
-if data == ["Hemos recibido tu peticion"]:
-    PETICION = "ACK sip:" + sys.argv[2] + " SIP/2.0\r\n"
-    my_socket.send(PETICION + '\r\n')
-    print "Enviando: " + PETICION
 
 print 'Recibido -- ', data
 print "Terminando socket..."
