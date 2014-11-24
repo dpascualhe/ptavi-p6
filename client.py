@@ -7,14 +7,23 @@ Programa cliente que abre un socket a un servidor
 import socket
 import sys
 
-# Comprobamos si tenemos los argumentos correctos
-if len(sys.argv) != 3:
+# Procedimiento que eleva la excepcion
+def raise_error():
     print "Usage: python client.py method receiver@IP:SIPport"
     raise SystemExit
 
-# Dirección IP del servidor.
-SERVER = sys.argv[2].split('@')[1].split(':')[0]
-PORT = int(sys.argv[2].split('@')[1].split(':')[1])
+# Comprobamos si tenemos los argumentos correctos
+if len(sys.argv) != 3:
+    raise_error()    
+
+# Dirección IP y puerto del servidor. Si hay algún error eleva la excepción
+try:
+    SERVER = sys.argv[2].split('@')[1].split(':')[0]
+    PORT = int(sys.argv[2].split('@')[1].split(':')[1])
+except ValueError:
+    raise_error()
+except IndexError:
+    raise_error()
 
 # Método requerido
 METHOD = sys.argv[1]
@@ -37,15 +46,20 @@ except socket.error:
 
 # Procesamos la respuesta
 line = data.split('\r\n\r\n')[:-1]
+ack = 0
 if line == ["SIP/2.0 100 Trying", "SIP/2.0 180 Ring", "SIP/2.0 200 OK"]:
     # Si todo va bien enviamos un ACK
-    my_socket.send("ACK sip:" + sys.argv[2] + " SIP/2.0\r\n" + '\r\n')
+    respuesta = "ACK sip:" + sys.argv[2] + " SIP/2.0\r\n" + '\r\n'    
+    my_socket.send(respuesta)
+    ack = 1
 elif line == ["SIP/2.0 400 Bad Request"]:
     print "El servidor no entiende la petición"
 elif line == ["SIP/2.0 405 Method Not Allowed"]:
     print "El servidor no entiende el método requerido"
 
 print 'Recibido -- ', data
+if ack:
+    print 'Enviamos:' + respuesta
 print "Terminando socket..."
 
 # Cerramos todo
