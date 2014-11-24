@@ -32,7 +32,7 @@ my_socket.send(PETICION + '\r\n')
 try:
     data = my_socket.recv(1024)
 except socket.error:
-    print "Error: No server listening at 193.147.73.20 port 5555"
+    print "Error: No server listening at " + SERVER + ":", PORT
     raise SystemExit    
 
 # Procesamos la respuesta

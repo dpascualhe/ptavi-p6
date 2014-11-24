@@ -9,20 +9,21 @@ import sys
 import os
 
 # Comprobamos si los argumentos son válidos
-try: 
-    audio = open (sys.argv[3], 'r')
+try:
     if len(sys.argv) != 4:
-        raise IOError
-except IOError:
+        raise IndexError       
+except IndexError:
     print "Usage: python server.py IP port audio_file"
     raise SystemExit
 
-print 'Listening...'
-"""
-elif sys.argv[4] does not exist:
-    print "Usage: python server.py IP port audio_file"
+try: 
+    audio = open (sys.argv[3], 'r')
+except IOError:
+    print "Audio file doesn't exist"
     raise SystemExit
-"""
+
+print 'Listening...'
+
 
 # Puerto en el que escuchamos
 PORT = int(sys.argv[2])
