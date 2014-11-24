@@ -7,14 +7,15 @@ Programa cliente que abre un socket a un servidor
 import socket
 import sys
 
-# Procedimiento que eleva la excepcion
+
 def raise_error():
+    """ Procedimiento que eleva la excepcion """
     print "Usage: python client.py method receiver@IP:SIPport"
     raise SystemExit
 
 # Comprobamos si tenemos los argumentos correctos
 if len(sys.argv) != 3:
-    raise_error()    
+    raise_error()
 
 # Dirección IP y puerto del servidor. Si hay algún error eleva la excepción
 try:
@@ -42,14 +43,14 @@ try:
     data = my_socket.recv(1024)
 except socket.error:
     print "Error: No server listening at " + SERVER + ":", PORT
-    raise SystemExit    
+    raise SystemExit
 
 # Procesamos la respuesta
 line = data.split('\r\n\r\n')[:-1]
 ack = 0
 if line == ["SIP/2.0 100 Trying", "SIP/2.0 180 Ring", "SIP/2.0 200 OK"]:
     # Si todo va bien enviamos un ACK
-    respuesta = "ACK sip:" + sys.argv[2] + " SIP/2.0\r\n" + '\r\n'    
+    respuesta = "ACK sip:" + sys.argv[2] + " SIP/2.0\r\n" + '\r\n'
     my_socket.send(respuesta)
     ack = 1
 elif line == ["SIP/2.0 400 Bad Request"]:
